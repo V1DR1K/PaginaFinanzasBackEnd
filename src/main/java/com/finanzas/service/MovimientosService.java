@@ -1,8 +1,7 @@
 package com.finanzas.service;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,14 +14,33 @@ public class MovimientosService {
 
 	@Autowired
 	MovimientosRepository movimientosRepository;
-	
-	public void save(Movimientos movimiento) {
-		movimientosRepository.save(movimiento);
+
+	public List<Movimientos> findAllMovimientos() {
+		return movimientosRepository.findAll();
 	}
-	
-	public List<Movimientos> getMovimientosMes(){
-		String mesActual = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM")); 
-		return movimientosRepository.findAllByMes(mesActual);
+
+	public Optional<Movimientos> findMovimientoById(int id) {
+		return movimientosRepository.findById(id);
 	}
-	
+
+	public Movimientos newMovimiento(Movimientos movimiento) {
+		movimiento.setId(0); // asegurar creación de nuevo registro
+		return movimientosRepository.save(movimiento);
+	}
+
+	public Optional<Movimientos> editMovimiento(int id, Movimientos movimiento) {
+		return movimientosRepository.findById(id)
+				.map(existing -> {
+					movimiento.setId(id);
+					return movimientosRepository.save(movimiento);
+				});
+	}
+
+	public boolean deleteMovimiento(int id) {
+		if (movimientosRepository.existsById(id)) {
+			movimientosRepository.deleteById(id);
+			return true;
+		}
+		return false;
+	}
 }

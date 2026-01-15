@@ -11,7 +11,6 @@ import com.finanzas.models.Movimientos;
 
 public interface MovimientosRepository extends JpaRepository<Movimientos, Integer> {
 
-	@Query("SELECT m FROM Movimientos m WHERE m.fecha LIKE CONCAT(:mes, '%')")
-	List<Movimientos> findAllByMes(@Param("mes") String mes);
+
 
 }

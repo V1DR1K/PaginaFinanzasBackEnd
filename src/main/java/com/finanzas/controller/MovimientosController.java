@@ -17,7 +17,7 @@ import com.finanzas.models.Movimientos;
 import com.finanzas.service.MovimientosService;
 
 @RestController
-@RequestMapping("/transacciones")
+@RequestMapping("/movimiento")
 public class MovimientosController {
 
 	@Autowired
@@ -30,7 +30,7 @@ public class MovimientosController {
 	}
 
 	@GetMapping("/findMovimientoById/{id}")
-	public ResponseEntity<Movimientos> findMovimientoById(@PathVariable Long id) {
+	public ResponseEntity<Movimientos> findMovimientoById(@PathVariable int id) {
 		Optional<Movimientos> movimiento = movimientosService.findMovimientoById(id);
 		return movimiento.map(ResponseEntity::ok)
 				.orElseGet(() -> ResponseEntity.notFound().build());
@@ -43,14 +43,14 @@ public class MovimientosController {
 	}
 
 	@PostMapping("/editMovimiento/{id}")
-	public ResponseEntity<Movimientos> editMovimiento(@PathVariable Long id, @RequestBody Movimientos movimiento) {
+	public ResponseEntity<Movimientos> editMovimiento(@PathVariable int id, @RequestBody Movimientos movimiento) {
 		Optional<Movimientos> actualizado = movimientosService.editMovimiento(id, movimiento);
 		return actualizado.map(ResponseEntity::ok)
 				.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
 	@DeleteMapping("/deleteMovimiento/{id}")
-	public ResponseEntity<Void> deleteMovimiento(@PathVariable Long id) {
+	public ResponseEntity<Void> deleteMovimiento(@PathVariable int id) {
 		boolean eliminado = movimientosService.deleteMovimiento(id);
 		if (eliminado) {
 			return ResponseEntity.noContent().build();

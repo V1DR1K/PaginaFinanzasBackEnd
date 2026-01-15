@@ -19,16 +19,16 @@ public class MovimientosService {
 		return movimientosRepository.findAll();
 	}
 
-	public Optional<Movimientos> findMovimientoById(int id) {
+	public Optional<Movimientos> findMovimientoById(Integer id) {
 		return movimientosRepository.findById(id);
 	}
 
 	public Movimientos newMovimiento(Movimientos movimiento) {
-		movimiento.setId(0); // asegurar creación de nuevo registro
+		movimiento.setId(null); // asegurar creación de nuevo registro
 		return movimientosRepository.save(movimiento);
 	}
 
-	public Optional<Movimientos> editMovimiento(int id, Movimientos movimiento) {
+	public Optional<Movimientos> editMovimiento(Integer id, Movimientos movimiento) {
 		return movimientosRepository.findById(id)
 				.map(existing -> {
 					movimiento.setId(id);
@@ -36,7 +36,7 @@ public class MovimientosService {
 				});
 	}
 
-	public boolean deleteMovimiento(int id) {
+	public boolean deleteMovimiento(Integer id) {
 		if (movimientosRepository.existsById(id)) {
 			movimientosRepository.deleteById(id);
 			return true;

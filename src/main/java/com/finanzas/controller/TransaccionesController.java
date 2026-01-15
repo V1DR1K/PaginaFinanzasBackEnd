@@ -13,8 +13,7 @@ import com.finanzas.service.MovimientosService;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @RestController
-@RequestMapping("/api/transacciones/")
-@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping("/transacciones/")
 public class TransaccionesController {
 
 	@Autowired

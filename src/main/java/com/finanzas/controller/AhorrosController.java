@@ -10,9 +10,7 @@ import com.finanzas.models.Movimientos;
 import com.finanzas.service.MovimientosService;
 
 @RestController
-@RequestMapping("/api/ahorros/")
-@CrossOrigin(origins = "http://localhost:4200")
-
+@RequestMapping("/ahorros/")
 public class AhorrosController {
 	
 	@Autowired

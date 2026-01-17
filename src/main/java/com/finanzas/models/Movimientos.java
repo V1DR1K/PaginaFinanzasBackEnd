@@ -1,6 +1,9 @@
 package com.finanzas.models;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -15,8 +18,14 @@ public class Movimientos {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	private String tipo;
+	private String tipo; // "ingreso" o "egreso"
+
+	@Enumerated(EnumType.STRING)
+	private TipoMovimiento tipoMovimiento; // GASTO, INVERSION, SALARIO
+
 	private int cantidad;
 	private LocalDate fecha;
+
+	@Column(columnDefinition = "TEXT")
 	private String descripcion;
 }

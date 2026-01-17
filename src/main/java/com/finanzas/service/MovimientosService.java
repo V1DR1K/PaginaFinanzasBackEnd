@@ -16,7 +16,7 @@ public class MovimientosService {
 	MovimientosRepository movimientosRepository;
 
 	public List<Movimientos> findAllMovimientos() {
-		return movimientosRepository.findAll();
+		return movimientosRepository.findAll().reversed();
 	}
 
 	public Optional<Movimientos> findMovimientoById(Integer id) {

@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Archivos sensibles - API Keys ###
+.env
+application-develop.properties
+**/application-develop.properties
+SECURITY.md
+

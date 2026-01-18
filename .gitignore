@@ -34,7 +34,11 @@ build/
 
 ### Archivos sensibles - API Keys ###
 .env
+application.properties
+**/application.properties
 application-develop.properties
 **/application-develop.properties
+application-production.properties
+**/application-production.properties
 SECURITY.md
 

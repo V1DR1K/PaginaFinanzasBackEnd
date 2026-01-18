@@ -4,6 +4,7 @@ import com.finanzas.config.CustomUserDetails;
 import com.finanzas.models.Categoria;
 import com.finanzas.models.dto.CategoriaRequest;
 import com.finanzas.service.CategoriaService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +51,7 @@ public class CategoriaController {
 
     @PostMapping
     public ResponseEntity<?> createCategoria(
-            @RequestBody CategoriaRequest request,
+            @Valid @RequestBody CategoriaRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         try {
             Long userId = userDetails.getUserId();
@@ -63,10 +64,10 @@ public class CategoriaController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PostMapping("/{id}")
     public ResponseEntity<?> updateCategoria(
             @PathVariable Long id,
-            @RequestBody CategoriaRequest request,
+            @Valid @RequestBody CategoriaRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         try {
             Long userId = userDetails.getUserId();

@@ -26,7 +26,7 @@ public class InsightController {
         return ResponseEntity.ok(insights);
     }
 
-    @PatchMapping("/{id}/marcar-leido")
+    @PostMapping("/{id}/leer")
     public ResponseEntity<?> marcarComoLeido(
             @PathVariable Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails) {

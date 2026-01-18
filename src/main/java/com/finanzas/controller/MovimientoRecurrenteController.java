@@ -4,6 +4,7 @@ import com.finanzas.config.CustomUserDetails;
 import com.finanzas.models.MovimientoRecurrente;
 import com.finanzas.models.dto.MovimientoRecurrenteRequest;
 import com.finanzas.service.MovimientoRecurrenteService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,12 +50,28 @@ public class MovimientoRecurrenteController {
 
     @PostMapping
     public ResponseEntity<?> createMovimientoRecurrente(
-            @RequestBody MovimientoRecurrenteRequest request,
+            @Valid @RequestBody MovimientoRecurrenteRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         try {
             Long userId = userDetails.getUserId();
             MovimientoRecurrente movimiento = movimientoRecurrenteService.create(request, userId);
             return ResponseEntity.status(HttpStatus.CREATED).body(movimiento);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<?> updateMovimientoRecurrente(
+            @PathVariable Long id,
+            @Valid @RequestBody MovimientoRecurrenteRequest request,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        try {
+            Long userId = userDetails.getUserId();
+            MovimientoRecurrente movimiento = movimientoRecurrenteService.update(id, request, userId);
+            return ResponseEntity.ok(movimiento);
         } catch (IllegalArgumentException e) {
             Map<String, String> error = new HashMap<>();
             error.put("error", e.getMessage());

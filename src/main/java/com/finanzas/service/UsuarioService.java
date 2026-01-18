@@ -40,7 +40,12 @@ public class UsuarioService implements UserDetailsService {
         Usuario usuario = usuarioRepository.findByUsuario(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
 
-        return new User(usuario.getUsuario(), usuario.getContrasena(), new ArrayList<>());
+        return new com.finanzas.config.CustomUserDetails(
+                usuario.getId(),
+                usuario.getUsuario(),
+                usuario.getContrasena(),
+                new ArrayList<>()
+        );
     }
 
     public Optional<Usuario> findByUsuario(String usuario) {

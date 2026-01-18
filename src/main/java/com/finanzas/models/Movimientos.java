@@ -28,4 +28,10 @@ public class Movimientos {
 
 	@Column(columnDefinition = "TEXT")
 	private String descripcion;
+
+	@Column(name = "user_id", nullable = false)
+	private Long userId;
+
+	@Column(name = "categoria_id")
+	private Long categoriaId;
 }

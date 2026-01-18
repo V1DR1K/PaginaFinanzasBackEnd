@@ -15,12 +15,12 @@ public class MovimientosService {
 	@Autowired
 	MovimientosRepository movimientosRepository;
 
-	public List<Movimientos> findAllMovimientos() {
-		return movimientosRepository.findAll().reversed();
+	public List<Movimientos> findAllMovimientosByUserId(Long userId) {
+		return movimientosRepository.findByUserId(userId).reversed();
 	}
 
-	public Optional<Movimientos> findMovimientoById(Integer id) {
-		return movimientosRepository.findById(id);
+	public Optional<Movimientos> findMovimientoByIdAndUserId(Integer id, Long userId) {
+		return movimientosRepository.findByIdAndUserId(id, userId);
 	}
 
 	public Movimientos newMovimiento(Movimientos movimiento) {
@@ -28,16 +28,18 @@ public class MovimientosService {
 		return movimientosRepository.save(movimiento);
 	}
 
-	public Optional<Movimientos> editMovimiento(Integer id, Movimientos movimiento) {
-		return movimientosRepository.findById(id)
+	public Optional<Movimientos> editMovimiento(Integer id, Movimientos movimiento, Long userId) {
+		return movimientosRepository.findByIdAndUserId(id, userId)
 				.map(existing -> {
 					movimiento.setId(id);
+					movimiento.setUserId(userId); // Asegurar que no cambie el userId
 					return movimientosRepository.save(movimiento);
 				});
 	}
 
-	public boolean deleteMovimiento(Integer id) {
-		if (movimientosRepository.existsById(id)) {
+	public boolean deleteMovimiento(Integer id, Long userId) {
+		Optional<Movimientos> movimiento = movimientosRepository.findByIdAndUserId(id, userId);
+		if (movimiento.isPresent()) {
 			movimientosRepository.deleteById(id);
 			return true;
 		}

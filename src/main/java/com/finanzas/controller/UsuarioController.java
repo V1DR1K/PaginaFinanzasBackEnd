@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @CrossOrigin(origins = {"http://localhost:4200", "http://172.17.160.1:4200", "http://192.168.0.146:4200", "http://204.216.191.205"})
 public class UsuarioController {
 
@@ -36,6 +36,7 @@ public class UsuarioController {
             if (esValido) {
                 String token = jwtUtil.generateToken(loginRequest.getUsuario());
                 LoginResponse response = new LoginResponse(token, loginRequest.getUsuario());
+                System.out.print("Credenciales Correctas - Usuario: " + loginRequest.getUsuario());
                 return ResponseEntity.ok(response);
             } else {
                 Map<String, String> error = new HashMap<>();

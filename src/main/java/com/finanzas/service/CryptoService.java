@@ -39,33 +39,48 @@ public class CryptoService {
 
     @Transactional
     public Crypto createCrypto(Long userId, CryptoRequest request) {
-        // Validar que no exista duplicado
-        if (cryptoRepository.existsByUserIdAndInstId(userId, request.getInstId())) {
-            throw new IllegalArgumentException("Ya existe una tenencia de " + request.getInstId() + " para este usuario");
+        // Si ya existe, aumentamos amount; si no, creamos la entidad
+        Crypto existente = cryptoRepository.findByUserIdAndInstId(userId, request.getInstId()).orElse(null);
+        if (existente != null) {
+            existente.setAmount(existente.getAmount().add(request.getAmount()));
+            // guardar provisionalmente el amount actualizado
+            cryptoRepository.save(existente);
+        } else {
+            Crypto crypto = new Crypto();
+            crypto.setUserId(userId);
+            crypto.setInstId(request.getInstId());
+            crypto.setSymbol(request.getSymbol());
+            crypto.setAmount(request.getAmount());
+            // percentage será recalculado
+            crypto.setPercentage(request.getPercentage());
+            crypto.setSource(request.getSource());
+            crypto.setDisplay(request.getDisplay());
+            crypto.setActivo(request.getActivo() != null ? request.getActivo() : true);
+            cryptoRepository.save(crypto);
         }
 
-        // Validar porcentaje total (opcional, solo warning)
-        BigDecimal totalPercentage = cryptoRepository.sumPercentageByUserId(userId);
-        if (totalPercentage != null) {
-            BigDecimal nuevoTotal = totalPercentage.add(request.getPercentage());
-            if (nuevoTotal.compareTo(BigDecimal.valueOf(100)) > 0) {
-                System.out.println("WARNING: El porcentaje total supera 100% para el usuario " + userId);
-                // No lanzar excepción, solo advertencia
+        // Recalcular porcentajes proporcionalmente a los amounts entre todas las cryptos activas
+        List<Crypto> actives = cryptoRepository.findByUserIdAndActivoOrderByPercentageDesc(userId, true);
+        // calcular suma total de amounts
+        java.math.BigDecimal totalAmount = actives.stream()
+                .map(Crypto::getAmount)
+                .filter(a -> a != null)
+                .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+
+        if (totalAmount.compareTo(java.math.BigDecimal.ZERO) > 0) {
+            for (Crypto c : actives) {
+                java.math.BigDecimal percent = c.getAmount()
+                        .multiply(java.math.BigDecimal.valueOf(100))
+                        .divide(totalAmount, 8, java.math.RoundingMode.HALF_UP)
+                        .setScale(2, java.math.RoundingMode.HALF_UP);
+                c.setPercentage(percent);
             }
+            cryptoRepository.saveAll(actives);
         }
 
-        // Crear crypto
-        Crypto crypto = new Crypto();
-        crypto.setUserId(userId);
-        crypto.setInstId(request.getInstId());
-        crypto.setSymbol(request.getSymbol());
-        crypto.setAmount(request.getAmount());
-        crypto.setPercentage(request.getPercentage());
-        crypto.setSource(request.getSource());
-        crypto.setDisplay(request.getDisplay());
-        crypto.setActivo(request.getActivo() != null ? request.getActivo() : true);
-
-        return cryptoRepository.save(crypto);
+        // devolver la tenencia (actualizada)
+        return cryptoRepository.findByUserIdAndInstId(userId, request.getInstId())
+                .orElseThrow(() -> new IllegalArgumentException("Error al crear/actualizar la tenencia"));
     }
 
     @Transactional

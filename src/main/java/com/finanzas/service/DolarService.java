@@ -24,15 +24,12 @@ public class DolarService {
     @SuppressWarnings("unchecked")
     public DolarResponseDTO getDolarOficial() {
         try {
-            ResponseEntity<Map> resp = restTemplate.getForEntity(DOLAR_OFICIAL_URL, Map.class);
+            ResponseEntity<Map<String, Object>> resp = restTemplate.getForEntity(DOLAR_OFICIAL_URL, (Class<Map<String, Object>>) (Class<?>) Map.class);
             if (!resp.getStatusCode().is2xxSuccessful() || resp.getBody() == null) {
                 throw new RuntimeException("La API externa devolvió un estado no exitoso");
             }
 
             Map<String,Object> body = resp.getBody();
-            // El JSON de dolarapi puede devolver un array u objeto; manejar caso objeto con key 'compra'/'venta' o map anidado
-            // Ejemplo esperado: { "compra": 150.0, "venta": 155.0 }
-
             Object compraObj = body.get("compra");
             Object ventaObj = body.get("venta");
             Object fechaObj = body.get("fecha");
@@ -53,7 +50,7 @@ public class DolarService {
     @SuppressWarnings("unchecked")
     public List<DolarTipoDTO> getAllDolares() {
         try {
-            ResponseEntity<List> resp = restTemplate.getForEntity(DOLAR_TODOS_URL, List.class);
+            ResponseEntity<List<Map<String, Object>>> resp = restTemplate.getForEntity(DOLAR_TODOS_URL, (Class<List<Map<String, Object>>>) (Class<?>) List.class);
             if (!resp.getStatusCode().is2xxSuccessful() || resp.getBody() == null) {
                 throw new RuntimeException("La API externa devolvió un estado no exitoso");
             }
@@ -70,18 +67,14 @@ public class DolarService {
             keywords.add("criptomoneda");
 
             for (Map<String,Object> item : list) {
-                // Usar nombre como campo principal (preservar original para la respuesta)
                 Object nombreObj = item.get("nombre");
                 String nombreOriginal = nombreObj != null ? nombreObj.toString() : null;
                 String nombreLower = nombreOriginal != null ? nombreOriginal.toLowerCase() : null;
-
-                // Si no hay 'nombre', intentar 'tipo' como respaldo
                 if (nombreLower == null) {
                     Object alt = item.get("tipo");
                     nombreOriginal = alt != null ? alt.toString() : null;
                     nombreLower = nombreOriginal != null ? nombreOriginal.toLowerCase() : null;
                 }
-
                 boolean include = false;
                 if (nombreLower != null) {
                     for (String k : keywords) {
@@ -91,16 +84,12 @@ public class DolarService {
                         }
                     }
                 }
-
-                if (!include) continue; // saltar si no es de interés
-
+                if (!include) continue;
                 Object compra = item.get("compra");
                 Object venta = item.get("venta");
                 Object fecha = item.get("fecha");
-
                 DolarTipoDTO dto = new DolarTipoDTO();
-                // Devolver el nombre original (no en lowercase) para mostrar en frontend
-                dto.setNombre(nombreOriginal != null ? nombreOriginal : (nombreLower != null ? nombreLower : null));
+                dto.setNombre(nombreOriginal); // nombreOriginal siempre es no null en este punto
                 if (compra != null) dto.setCompra(Float.parseFloat(compra.toString()));
                 if (venta != null) dto.setVenta(Float.parseFloat(venta.toString()));
                 if (fecha != null) dto.setFecha(fecha.toString());

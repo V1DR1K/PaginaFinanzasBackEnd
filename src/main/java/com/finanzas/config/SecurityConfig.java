@@ -17,12 +17,14 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
 
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
@@ -42,7 +44,19 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exception -> exception
+                        .accessDeniedHandler((req, res, ex) -> {
+                            String user = req.getUserPrincipal() != null ? req.getUserPrincipal().getName() : "ANONYMOUS";
+                            String authHeader = req.getHeader("Authorization");
+                            System.out.println("403 - Acceso DENEGADO. Usuario: " + user +
+                                ", URI: " + req.getRequestURI() +
+                                ", Método: " + req.getMethod() +
+                                ", IP: " + req.getRemoteAddr() +
+                                ", Authorization: " + (authHeader != null ? authHeader.substring(0, Math.min(20, authHeader.length())) + "..." : "NO HEADER"));
+                            res.sendError(403);
+                        })
+                );
 
         return http.build();
     }

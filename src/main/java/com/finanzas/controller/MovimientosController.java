@@ -34,7 +34,7 @@ public class MovimientosController {
 	}
 
 	@GetMapping("/findMovimientoById/{id}")
-	public ResponseEntity<Movimientos> findMovimientoById(@PathVariable int id,
+	public ResponseEntity<Movimientos> findMovimientoById(@PathVariable Long id,
 			@AuthenticationPrincipal CustomUserDetails userDetails) {
 		Long userId = userDetails.getUserId();
 		Optional<Movimientos> movimiento = movimientosService.findMovimientoByIdAndUserId(id, userId);
@@ -52,7 +52,7 @@ public class MovimientosController {
 	}
 
 	@PostMapping("/editMovimiento/{id}")
-	public ResponseEntity<Movimientos> editMovimiento(@PathVariable int id, @RequestBody Movimientos movimiento,
+	public ResponseEntity<Movimientos> editMovimiento(@PathVariable Long id, @RequestBody Movimientos movimiento,
 			@AuthenticationPrincipal CustomUserDetails userDetails) {
 		Long userId = userDetails.getUserId();
 		Optional<Movimientos> actualizado = movimientosService.editMovimiento(id, movimiento, userId);
@@ -61,7 +61,7 @@ public class MovimientosController {
 	}
 
 	@DeleteMapping("/deleteMovimiento/{id}")
-	public ResponseEntity<Void> deleteMovimiento(@PathVariable int id,
+	public ResponseEntity<Void> deleteMovimiento(@PathVariable Long id,
 			@AuthenticationPrincipal CustomUserDetails userDetails) {
 		Long userId = userDetails.getUserId();
 		boolean eliminado = movimientosService.deleteMovimiento(id, userId);

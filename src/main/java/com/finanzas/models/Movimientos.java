@@ -14,24 +14,24 @@ import java.time.LocalDate;
 @Data
 @Entity
 public class Movimientos {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	private String tipo; // "ingreso" o "egreso"
+    private String tipo; // "ingreso" o "egreso"
 
-	@Enumerated(EnumType.STRING)
-	private TipoMovimiento tipoMovimiento; // GASTO, INVERSION, SALARIO
+    @Enumerated(EnumType.STRING)
+    private TipoMovimiento tipoMovimiento; // GASTO, INVERSION, SALARIO
 
-	private int cantidad;
-	private LocalDate fecha;
+    private double cantidad;
+    private LocalDate fecha;
 
-	@Column(columnDefinition = "TEXT")
-	private String descripcion;
+    @Column(columnDefinition = "TEXT")
+    private String descripcion;
 
-	@Column(name = "user_id", nullable = false)
-	private Long userId;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
-	@Column(name = "categoria_id")
-	private Long categoriaId;
+    @Column(name = "categoria_id")
+    private Long categoriaId;
 }

@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface MovimientosRepository extends JpaRepository<Movimientos, Integer> {
+public interface MovimientosRepository extends JpaRepository<Movimientos, Long> {
 
     List<Movimientos> findByUserId(Long userId);
 
-    Optional<Movimientos> findByIdAndUserId(Integer id, Long userId);
+    Optional<Movimientos> findByIdAndUserId(Long id, Long userId);
 
     List<Movimientos> findByUserIdAndTipo(Long userId, String tipo);
 

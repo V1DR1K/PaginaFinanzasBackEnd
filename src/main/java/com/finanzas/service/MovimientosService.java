@@ -19,7 +19,7 @@ public class MovimientosService {
 		return movimientosRepository.findByUserId(userId).reversed();
 	}
 
-	public Optional<Movimientos> findMovimientoByIdAndUserId(Integer id, Long userId) {
+	public Optional<Movimientos> findMovimientoByIdAndUserId(Long id, Long userId) {
 		return movimientosRepository.findByIdAndUserId(id, userId);
 	}
 
@@ -28,7 +28,7 @@ public class MovimientosService {
 		return movimientosRepository.save(movimiento);
 	}
 
-	public Optional<Movimientos> editMovimiento(Integer id, Movimientos movimiento, Long userId) {
+	public Optional<Movimientos> editMovimiento(Long id, Movimientos movimiento, Long userId) {
 		return movimientosRepository.findByIdAndUserId(id, userId)
 				.map(existing -> {
 					movimiento.setId(id);
@@ -37,7 +37,7 @@ public class MovimientosService {
 				});
 	}
 
-	public boolean deleteMovimiento(Integer id, Long userId) {
+	public boolean deleteMovimiento(Long id, Long userId) {
 		Optional<Movimientos> movimiento = movimientosRepository.findByIdAndUserId(id, userId);
 		if (movimiento.isPresent()) {
 			movimientosRepository.deleteById(id);

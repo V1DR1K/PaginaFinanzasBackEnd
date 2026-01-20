@@ -10,8 +10,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ComponentScan(basePackages = "com.finanzas")
 public class FinanzasApp {
 
+
 	public static void main(String[] args) {
 		SpringApplication.run(FinanzasApp.class, args);
+		System.out.println("\n==============================");
+		System.out.println("[Backend Iniciado] Bienvenido - Versión: " + java.time.LocalDateTime.now());
+		System.out.println("==============================\n");
 	}
 
 }

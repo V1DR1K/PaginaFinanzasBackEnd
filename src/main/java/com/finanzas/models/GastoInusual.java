@@ -21,7 +21,7 @@ public class GastoInusual {
     private Long id;
 
     @Column(name = "movimiento_id", nullable = false)
-    private Integer movimientoId;
+    private Long movimientoId;
 
     @Column(nullable = false, length = 50)
     private String tipo;

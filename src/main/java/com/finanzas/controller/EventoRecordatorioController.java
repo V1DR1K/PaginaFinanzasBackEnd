@@ -18,13 +18,13 @@ public class EventoRecordatorioController {
     @Autowired
     private EventoRecordatorioService eventoRecordatorioService;
 
-    @GetMapping
+    @GetMapping("/getEventos")
     public ResponseEntity<List<EventoRecordatorioResponse>> getEventos(@AuthenticationPrincipal CustomUserDetails userDetails) {
         Long userId = userDetails.getUserId();
         return ResponseEntity.ok(eventoRecordatorioService.getEventos(userId));
     }
 
-    @PostMapping
+    @PostMapping("/addEventos")
     public ResponseEntity<EventoRecordatorioResponse> crearEvento(@Valid @RequestBody EventoRecordatorioRequest req,
                                                                  @AuthenticationPrincipal CustomUserDetails userDetails) {
         Long userId = userDetails.getUserId();

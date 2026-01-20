@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/movimiento/{movimientoId}/adjuntos")
+@RequestMapping("/movimientos/{movimientoId}/adjuntos")
 public class AdjuntoController {
 
     @Autowired
@@ -72,12 +72,9 @@ public class AdjuntoController {
             Adjunto adjunto = adjuntoService.findByIdAndUserId(adjuntoId, userId)
                     .orElseThrow(() -> new IllegalArgumentException("Adjunto no encontrado"));
 
-            Path filePath = adjuntoService.getFilePath(adjuntoId, userId);
-            Resource resource = new UrlResource(filePath.toUri());
-
-            if (!resource.exists() || !resource.isReadable()) {
-                return ResponseEntity.notFound().build();
-            }
+            // Recuperar el archivo desde base64
+            byte[] fileBytes = adjuntoService.getAdjuntoFile(adjuntoId, userId);
+            org.springframework.core.io.ByteArrayResource resource = new org.springframework.core.io.ByteArrayResource(fileBytes);
 
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType(adjunto.getTipoArchivo()))

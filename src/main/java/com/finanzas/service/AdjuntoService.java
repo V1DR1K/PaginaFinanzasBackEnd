@@ -11,10 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -58,27 +56,18 @@ public class AdjuntoService {
         // Validar archivo
         validateFile(file);
 
-        // Crear estructura de directorios: uploads/{userId}/{movimientoId}/
-        String directoryPath = uploadDirectory + "/" + userId + "/" + movimientoId;
-        Path directory = Paths.get(directoryPath);
-        Files.createDirectories(directory);
-
-        // Generar nombre único
-        String originalFilename = file.getOriginalFilename();
-        String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-        String uniqueFilename = UUID.randomUUID().toString() + extension;
-
-        // Guardar archivo
-        Path filePath = directory.resolve(uniqueFilename);
-        file.transferTo(filePath.toFile());
+        // Convertir archivo a Base64
+        byte[] fileBytes = file.getBytes();
+        String base64Content = Base64.getEncoder().encodeToString(fileBytes);
 
         // Crear registro en BD
         Adjunto adjunto = new Adjunto();
         adjunto.setMovimientoId(movimientoId);
-        adjunto.setNombreArchivo(originalFilename);
+        adjunto.setNombreArchivo(file.getOriginalFilename());
         adjunto.setTipoArchivo(file.getContentType());
         adjunto.setTamano(file.getSize());
-        adjunto.setUrl("/" + uploadDirectory + "/" + userId + "/" + movimientoId + "/" + uniqueFilename);
+        adjunto.setBase64(base64Content); // Nuevo campo en la entidad Adjunto
+        // El campo url ya no se usa para almacenamiento físico
 
         return adjuntoRepository.save(adjunto);
     }
@@ -88,21 +77,14 @@ public class AdjuntoService {
         Adjunto adjunto = adjuntoRepository.findByIdAndUserId(adjuntoId, userId)
                 .orElseThrow(() -> new IllegalArgumentException("Adjunto no encontrado"));
 
-        // Eliminar archivo físico
-        Path filePath = Paths.get(adjunto.getUrl());
-        if (Files.exists(filePath)) {
-            Files.delete(filePath);
-        }
-
         // Eliminar registro de BD
         adjuntoRepository.delete(adjunto);
     }
 
-    public Path getFilePath(Long adjuntoId, Long userId) {
+    public byte[] getAdjuntoFile(Long adjuntoId, Long userId) {
         Adjunto adjunto = adjuntoRepository.findByIdAndUserId(adjuntoId, userId)
                 .orElseThrow(() -> new IllegalArgumentException("Adjunto no encontrado"));
-
-        return Paths.get(adjunto.getUrl());
+        return Base64.getDecoder().decode(adjunto.getBase64());
     }
 
     private void validateFile(MultipartFile file) {

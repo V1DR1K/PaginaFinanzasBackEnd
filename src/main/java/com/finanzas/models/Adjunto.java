@@ -30,11 +30,17 @@ public class Adjunto {
     @Column(nullable = false)
     private Long tamano;
 
-    @Column(nullable = false, length = 500)
-    private String url;
-
     @Column(name = "fecha_subida", updatable = false)
     private LocalDateTime fechaSubida;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "movimiento_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private Movimientos movimiento;
+
+    @Lob
+    @Column(name = "base64", columnDefinition = "LONGTEXT")
+    private String base64;
 
     @PrePersist
     protected void onCreate() {

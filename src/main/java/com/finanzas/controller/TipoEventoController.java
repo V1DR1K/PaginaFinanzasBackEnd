@@ -16,12 +16,12 @@ public class TipoEventoController {
     @Autowired
     private TipoEventoService tipoEventoService;
 
-    @GetMapping
+    @GetMapping("/getTipos")
     public ResponseEntity<List<TipoEventoResponse>> getTiposEvento() {
         return ResponseEntity.ok(tipoEventoService.getTiposEvento());
     }
 
-    @PostMapping
+    @PostMapping("/addTipos")
     public ResponseEntity<TipoEventoResponse> crearTipoEvento(@Valid @RequestBody TipoEventoRequest req) {
         TipoEventoResponse response = tipoEventoService.crearTipoEvento(req);
         return ResponseEntity.ok(response);

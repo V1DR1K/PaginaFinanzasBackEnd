@@ -228,4 +228,11 @@ public class MovimientoRecurrenteService {
             }
         }
     }
+
+    @Transactional
+    public void delete(Long id, Long userId) {
+        MovimientoRecurrente movimiento = movimientoRecurrenteRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new IllegalArgumentException("Movimiento recurrente no encontrado o no pertenece al usuario"));
+        movimientoRecurrenteRepository.delete(movimiento);
+    }
 }

@@ -108,4 +108,19 @@ public class MovimientoRecurrenteController {
             return ResponseEntity.badRequest().body(error);
         }
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteMovimientoRecurrente(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        try {
+            Long userId = userDetails.getUserId();
+            movimientoRecurrenteService.delete(id, userId);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
 }

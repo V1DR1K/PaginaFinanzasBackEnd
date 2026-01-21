@@ -18,7 +18,7 @@ public class TipoEventoService {
     public List<TipoEventoResponse> getTiposEvento() {
         return tipoEventoRepository.findAll()
                 .stream()
-                .map(t -> new TipoEventoResponse(t.getId(), t.getNombre(), t.getDescripcion()))
+                .map(t -> new TipoEventoResponse(t.getId(), t.getNombre(), t.getDescripcion(), t.getColor()))
                 .collect(Collectors.toList());
     }
 
@@ -26,7 +26,24 @@ public class TipoEventoService {
         TipoEvento tipo = new TipoEvento();
         tipo.setNombre(req.getNombre());
         tipo.setDescripcion(req.getDescripcion());
+        tipo.setColor(req.getColor());
         tipo = tipoEventoRepository.save(tipo);
-        return new TipoEventoResponse(tipo.getId(), tipo.getNombre(), tipo.getDescripcion());
+        return new TipoEventoResponse(tipo.getId(), tipo.getNombre(), tipo.getDescripcion(), tipo.getColor());
+    }
+
+    public TipoEventoResponse updateTipoEvento(Long id, TipoEventoRequest req) {
+        TipoEvento tipo = tipoEventoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Tipo de evento no encontrado"));
+        tipo.setNombre(req.getNombre());
+        tipo.setDescripcion(req.getDescripcion());
+        tipo.setColor(req.getColor());
+        tipo = tipoEventoRepository.save(tipo);
+        return new TipoEventoResponse(tipo.getId(), tipo.getNombre(), tipo.getDescripcion(), tipo.getColor());
+    }
+
+    public void deleteTipoEvento(Long id) {
+        TipoEvento tipo = tipoEventoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Tipo de evento no encontrado"));
+        tipoEventoRepository.delete(tipo);
     }
 }

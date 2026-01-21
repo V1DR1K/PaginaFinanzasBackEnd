@@ -26,4 +26,16 @@ public class TipoEventoController {
         TipoEventoResponse response = tipoEventoService.crearTipoEvento(req);
         return ResponseEntity.ok(response);
     }
+
+    @PutMapping("/updateTipo/{id}")
+    public ResponseEntity<TipoEventoResponse> updateTipoEvento(@PathVariable Long id, @Valid @RequestBody TipoEventoRequest req) {
+        TipoEventoResponse response = tipoEventoService.updateTipoEvento(id, req);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/deleteTipo/{id}")
+    public ResponseEntity<Void> deleteTipoEvento(@PathVariable Long id) {
+        tipoEventoService.deleteTipoEvento(id);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -50,7 +50,7 @@ public class AdjuntoService {
     @Transactional
     public Adjunto uploadAdjunto(Long movimientoId, MultipartFile file, Long userId) throws IOException {
         // Verificar que el movimiento pertenece al usuario
-        Movimientos movimiento = movimientosRepository.findByIdAndUserId(movimientoId.intValue(), userId)
+        Movimientos movimiento = movimientosRepository.findByIdAndUserId(movimientoId.longValue(), userId)
                 .orElseThrow(() -> new IllegalArgumentException("Movimiento no encontrado"));
 
         // Validar archivo

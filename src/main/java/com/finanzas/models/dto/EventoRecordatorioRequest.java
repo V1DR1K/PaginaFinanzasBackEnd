@@ -1,13 +1,11 @@
 package com.finanzas.models.dto;
 
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public class EventoRecordatorioRequest {
     @NotNull(message = "La fecha es obligatoria")
-    @FutureOrPresent(message = "La fecha debe ser hoy o futura")
     private LocalDate fecha;
 
     @NotBlank(message = "La descripción es obligatoria")

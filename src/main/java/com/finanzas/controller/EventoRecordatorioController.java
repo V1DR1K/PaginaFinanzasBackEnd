@@ -31,4 +31,21 @@ public class EventoRecordatorioController {
         EventoRecordatorioResponse response = eventoRecordatorioService.crearEvento(userId, req);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/futuros")
+    public ResponseEntity<List<EventoRecordatorioResponse>> getEventosFuturos(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        Long userId = userDetails.getUserId();
+        return ResponseEntity.ok(eventoRecordatorioService.getEventosFuturos(userId));
+    }
+
+    @GetMapping("/pasados")
+    public ResponseEntity<List<EventoRecordatorioResponse>> getEventosPasados(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        Long userId = userDetails.getUserId();
+        return ResponseEntity.ok(eventoRecordatorioService.getEventosPasados(userId));
+    }
+    @GetMapping("/test")
+    public void testEnviarMails() {
+        System.out.print("llego");
+        eventoRecordatorioService.enviarRecordatoriosPendientes();
+    }
 }

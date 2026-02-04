@@ -54,6 +54,24 @@ public class EventoRecordatorioService {
         return new EventoRecordatorioResponse(evento.getId(), evento.getFecha(), evento.getDescripcion(), evento.getTipo().getId(), evento.getTipo().getNombre());
     }
 
+    public List<EventoRecordatorioResponse> getEventosFuturos(Long usuarioId) {
+        LocalDate hoy = LocalDate.now();
+        return eventoRecordatorioRepository.findByUsuarioId(usuarioId)
+                .stream()
+                .filter(e -> !e.getFecha().isBefore(hoy))
+                .map(e -> new EventoRecordatorioResponse(e.getId(), e.getFecha(), e.getDescripcion(), e.getTipo().getId(), e.getTipo().getNombre()))
+                .collect(Collectors.toList());
+    }
+
+    public List<EventoRecordatorioResponse> getEventosPasados(Long usuarioId) {
+        LocalDate hoy = LocalDate.now();
+        return eventoRecordatorioRepository.findByUsuarioId(usuarioId)
+                .stream()
+                .filter(e -> e.getFecha().isBefore(hoy))
+                .map(e -> new EventoRecordatorioResponse(e.getId(), e.getFecha(), e.getDescripcion(), e.getTipo().getId(), e.getTipo().getNombre()))
+                .collect(Collectors.toList());
+    }
+
     // Ejecuta todos los días a las 8 AM
     @Scheduled(cron = "0 0 8 * * *")
     public void enviarRecordatoriosPendientes() {
